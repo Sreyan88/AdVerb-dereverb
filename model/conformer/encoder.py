@@ -12,6 +12,7 @@ from typing import Tuple
 from vam.conformer.feed_forward import FeedForwardModule
 from vam.conformer.attention import MultiHeadedSelfAttentionModule
 from vam.models.vit import MultiHeadedCrossmodalAttentionModule
+from geometric.modules.swg_transformer import SWG_Transformer
 # from vam.conformer.attention import MultiHeadedCrossmodalAttentionModule
 
 from vam.conformer.convolution import (
@@ -95,6 +96,14 @@ class ConformerBlock(pl.LightningModule):
                     dropout_p=conv_dropout_p
                 ),
             ))
+        modules.append(SWG_Transformer(dim=token_dim,
+                                  depth=6,
+                                  heads=16,
+                                  win_size=8,
+                                  dim_head=64,
+                                  mlp_dim=2048,
+                                  dropout=0.1))
+                                  
         modules.append(ResidualConnectionModule(
                     module=FeedForwardModule(
                         encoder_dim=encoder_dim,

@@ -1,12 +1,12 @@
 import torch.nn
 import torch
 import torch.nn as nn
-import models.modules as modules
+import geometric.modules as modules
 import numpy as np
 
-from models.base_model import BaseModule
-from models.modules.horizon_net_feature_extractor import HorizonNetFeatureExtractor
-from models.modules.patch_feature_extractor import PatchFeatureExtractor
+from geometric.base_model import BaseModule
+from geometric.modules.horizon_net_feature_extractor import HorizonNetFeatureExtractor
+from geometric.modules.patch_feature_extractor import PatchFeatureExtractor
 from utils.conversion import uv2depth, get_u, lonlat2depth, get_lon, lonlat2uv
 from utils.height import calc_ceil_ratio
 from utils.misc import tensor2np
@@ -195,7 +195,7 @@ class LGT_Net(BaseModule):
 if __name__ == '__main__':
     from PIL import Image
     import numpy as np
-    from models.other.init_env import init_env
+    from geometric.other.init_env import init_env
 
     init_env(0, deterministic=True)
 
