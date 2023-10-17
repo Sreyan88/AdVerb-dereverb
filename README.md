@@ -25,6 +25,6 @@ If you find this article useful in your research, please consider citing:
 ```
 
 
-The ```model``` folder contains the code for our model. You can import it from ```model/models/adverb.py```. The training code will be released soon.
+<!--- The ```model``` folder contains the code for our model. You can import it from ```model/models/adverb.py```. The training code will be released soon. --->
 
 Our code is inspired by [Visual Acoustic Matching](https://github.com/facebookresearch/visual-acoustic-matching).
