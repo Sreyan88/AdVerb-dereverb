@@ -136,6 +136,67 @@ class Generator(nn.Module):
         x = x.permute(0, 2, 1)
         return self.model(x)
 
+import torch
+import numpy as np
+import torch.nn as nn
+
+# Assuming the required modules (WNConv1d, WNConvTranspose1d, ResnetBlock, weights_init) 
+# are already imported or defined above this code
+
+class Complex_Generator(nn.Module):
+    def __init__(self, input_size, ngf, n_residual_layers, ratios="8,4,2,2"):
+        super().__init__()
+        ratios = [int(x) for x in ratios.split(',')]
+        self.hop_length = np.prod(ratios)
+        mult = int(2 ** len(ratios))
+
+        model = [
+            nn.ReflectionPad1d(3),
+            WNConv1d(input_size, mult * ngf, kernel_size=7, padding=0),
+        ]
+
+        # Upsample to raw audio scale
+        for i, r in enumerate(ratios):
+            model += [
+                nn.LeakyReLU(0.2),
+                WNConvTranspose1d(
+                    mult * ngf,
+                    mult * ngf // 2,
+                    kernel_size=r * 2,
+                    stride=r,
+                    padding=r // 2 + r % 2,
+                    output_padding=r % 2,
+                ),
+            ]
+
+            for j in range(n_residual_layers):
+                model += [ResnetBlock(mult * ngf // 2, dilation=3 ** j)]
+
+            mult //= 2
+
+        model += [
+            nn.LeakyReLU(0.2),
+            nn.ReflectionPad1d(3),
+            # Change this to produce 2 values (real and imaginary components) for each frequency bin
+            WNConv1d(ngf, 2, kernel_size=7, padding=0),
+        ]
+
+        self.model = nn.Sequential(*model)
+        self.apply(weights_init)
+
+    def forward(self, x):
+        x = x.permute(0, 2, 1)
+        out = self.model(x)
+        
+        # Assuming the output shape is [batch_size, 2, time]. 
+        # Split the output into real and imaginary parts
+        real = out[:, 0, :]
+        imag = out[:, 1, :]
+        
+        # Combine real and imaginary parts to get the complex output
+        complex_out = torch.complex(real, imag)
+        return complex_out
+
 
 class AudioEncoder(nn.Module):
     def __init__(self, input_size, ngf, n_residual_layers, ratios="8,4,2,2"):

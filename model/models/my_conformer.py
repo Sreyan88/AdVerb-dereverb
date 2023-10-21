@@ -8,10 +8,10 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
-from vam.conformer.encoder import ConformerEncoder
+from model.conformer.encoder import ConformerEncoder
 import torch.nn.functional as F
 import pytorch_lightning as pl
-from vam.models.wav_decoder import Generator, AudioEncoder
+from model.models.wav_decoder import Generator, AudioEncoder, Complex_Generator
 
 
 class Conformer(pl.LightningModule):
@@ -95,7 +95,7 @@ class Conformer(pl.LightningModule):
         else:
             self.audio_encoder = None
         if decode_wav:
-            self.decoder = Generator(input_size=512, ngf=ngf, n_residual_layers=decoder_residual_layers,
+            self.decoder = Complex_Generator(input_size=512, ngf=ngf, n_residual_layers=decoder_residual_layers,
                                      ratios=decoder_ratios)
         else:
             self.decoder = nn.Linear(encoder_dim, input_dim)

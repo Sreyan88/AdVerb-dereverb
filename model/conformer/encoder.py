@@ -9,16 +9,16 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 
-from vam.conformer.feed_forward import FeedForwardModule
-from vam.conformer.attention import MultiHeadedSelfAttentionModule
-from vam.models.vit import MultiHeadedCrossmodalAttentionModule
+from model.conformer.feed_forward import FeedForwardModule
+from model.conformer.attention import MultiHeadedSelfAttentionModule
+from model.models.vit import MultiHeadedCrossmodalAttentionModule
 from geometric.modules.swg_transformer import SWG_Transformer
-# from vam.conformer.attention import MultiHeadedCrossmodalAttentionModule
+# from model.conformer.attention import MultiHeadedCrossmodalAttentionModule
 
-from vam.conformer.convolution import (
+from model.conformer.convolution import (
     ConformerConvModule,
 )
-from vam.conformer.modules import (
+from model.conformer.modules import (
     ResidualConnectionModule,
     Linear,
 )
@@ -103,7 +103,7 @@ class ConformerBlock(pl.LightningModule):
                                   dim_head=64,
                                   mlp_dim=2048,
                                   dropout=0.1))
-                                  
+
         modules.append(ResidualConnectionModule(
                     module=FeedForwardModule(
                         encoder_dim=encoder_dim,
